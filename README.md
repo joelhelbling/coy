@@ -1,6 +1,14 @@
 # Coy
 
 A convenience handler for TrueCrypt which sets up a git-ignored, encrypted
+volume within a project for storing sensitive information.  This allows
+access to that sensitive material _while you're developing or running your
+application_ but otherwise, the data is inaccessible.
+
+You probably don't want to store a whole project in there; usually the
+sensitive stuff is just a few bytes of stuff, such as passwords, personally
+identifying numbers, etc.  But since the volume is created/managed by
+TrueCrypt, it could be arbitrarily large.
 
 ## Operations
 
@@ -18,7 +26,7 @@ A convenience handler for TrueCrypt which sets up a git-ignored, encrypted
 
 # Resources
 
- - .coy in root of project, configuring:
+ - .coy directory in root of project, configuring:
    - {name}
    - mounting parameters (if any)
 
