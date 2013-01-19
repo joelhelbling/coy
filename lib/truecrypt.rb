@@ -2,7 +2,7 @@ class Truecrypt
 
   def self.create_volume(p={})
 
-    @volume_name   = p[:volume_name]   || './coy/secrets.tc'
+    @volume_name   = format_name p[:volume_name]
     @volume_type   = p[:volume_type]   || 'normal'
     @size          = p[:size_in_bytes] || 5000000  # 5Mb
     @encryption    = p[:encryption]    || 'AES'
@@ -17,3 +17,17 @@ class Truecrypt
     `truecrypt -t \--create #@volume_name --volume-type=#@volume_type --size=#@size --encryption=#@encryption --hash=#@hash --filesystem=#@filesystem --password=#@password --keyfiles=#@keyfiles --random-source=#@random_source`
   end
 end
+
+  def self.unlock(name)
+    `truecrypt .coy/#{name}.tc name`
+  end
+
+  def self.lock(name)
+    `truecrypt -d .coy/#{name}.tc`
+  end
+
+  private
+
+  def self.format_name(name='secrets')
+   "./coy/#{name.gsub(/\.tc$/,'')}.tc"
+  end

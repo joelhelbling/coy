@@ -2,6 +2,10 @@ _This project is nascent and doesn't work yet.  Please set your
 polling interval to at least 300 milliseconds.  Thank-you for your
 patience._
 
+_If you're not that patient, and want to see how things are coming
+along, take a look at
+[Coy's Trello board](https://trello.com/board/coy-gem/50fac5252c4479de56004783)._
+
 # Coy
 
 A strategy for obscuring shy data, Coy uses TrueCrypt to set up a
