@@ -27,18 +27,16 @@ class TrueCrypt
 
     ensure_coy_directory_exists
 
-    puts `#{command}`
+    `#{command}`
   end
 
   # if no password provided, gui window will pop up
-  def self.unlock(name, password=nil)
+  def self.open(name, password=nil)
     pwd_param = password && "--password=#{password}"
     `truecrypt .coy/#{name}.tc #{pwd_param} #{name}`
   end
 
-  def self.open(name, password=nil); unlock(name, password); end
-
-  def self.lock(name)
+  def self.close(name)
     `truecrypt -d .coy/#{name}.tc`
   end
 
