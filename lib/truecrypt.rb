@@ -40,8 +40,6 @@ class TrueCrypt
     `truecrypt -d .coy/#{name}.tc`
   end
 
-  def self.close(name); lock(name); end
-
   private
 
   def self.format_name(name='secrets')
