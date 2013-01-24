@@ -2,30 +2,28 @@ class TrueCrypt
 
   def self.create_volume(p={})
 
-    volume_name   = format_name p[:volume_name]
+    volume_name   = p[:name]
     volume_type   = p[:volume_type]   || 'normal'
-    size          = p[:size_in_bytes] || 5000000  # 5Mb
+    size          = p[:size_in_bytes] || 5_000_000  # 5Mb
     encryption    = p[:encryption]    || 'AES'
     hash          = p[:hash]          || 'Whirlpool'
     keyfiles      = p[:keyfiles]      || '""'
-    random_source = p[:random_source] || __FILE__
-    password      = p[:password]      || raise("Coy sez, \"what's the password?\"")
-    filesystem    = 'FAT' # truecrypt bug: Mac OS Extended doesn't work with --text interface
+    random_source = p[:random_source] || File.path_rel(__FILE__)
+    password      = p[:password]      || raise("Please provide a password")
+    filesystem    = p[:filesystem]    || 'FAT'
 
     command = <<-TC
-      truecrypt -t                   \
-        --create #{volume_name}      \
-        --volume-type=#{volume_type} \
-        --size=#{size}               \
-        --encryption=#{encryption}   \
-        --hash=#{hash}               \
-        --filesystem=#{filesystem}   \
-        --password=#{password}       \
-        --keyfiles=#{keyfiles}       \
+      truecrypt --text                   \
+        --create #{name}                 \
+        --volume-type=#{volume_type}     \
+        --size=#{size}                   \
+        --encryption=#{encryption}       \
+        --hash=#{hash}                   \
+        --filesystem=#{filesystem}       \
+        --password=#{password}           \
+        --keyfiles=#{keyfiles}           \
         --random-source=#{random_source}
     TC
-
-    ensure_coy_directory_exists
 
     `#{command}`
   end
@@ -40,14 +38,5 @@ class TrueCrypt
     `truecrypt -d .coy/#{name}.tc`
   end
 
-  private
-
-  def self.format_name(name='secrets')
-   "./.coy/#{name.gsub(/\.tc$/,'')}.tc"
-  end
-
-  def self.ensure_coy_directory_exists
-    Dir.mkdir('.coy') unless File.directory?('./.coy')
-  end
 end
 

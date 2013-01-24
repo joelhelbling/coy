@@ -1,0 +1,45 @@
+require 'spec_helper'
+require 'coy/operation'
+
+module Coy
+  describe Operation do
+    subject { Operation.new coy_action, coy_params }
+
+    describe "create" do
+
+      context "required params only" do
+        let(:coy_action) { :create }
+
+        let(:coy_params) do
+          {
+            name: 'foo',
+            password: 'b@r'
+          }
+        end
+
+        let(:tc_params) do
+          {
+            name:          '.coy/foo.tc',
+            size_in_bytes: 2_000_000,
+            encryption:    'AES',
+            hash:          'Whirlpool',
+            filesystem:    'FAT',
+            password:      'b@r',
+            keyfiles:      '""'
+          }
+        end
+
+        it "create a volume" do
+          TrueCrypt.should_receive(:create_volume).with(tc_params)
+          subject.go
+        end
+      end
+
+    end
+
+    describe "open" do
+
+    end
+
+  end
+end
