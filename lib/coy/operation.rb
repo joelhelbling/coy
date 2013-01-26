@@ -21,8 +21,18 @@ module Coy
       @parameters[:filesystem] = 'FAT'
     end
 
+    def parameters_for_open
+      # no special parameters for open
+    end
+
+    def parameters_for_close
+      # no special parameters for close
+    end
+
     def go
       TrueCrypt.create_volume(@parameters) if @action == :create
+      TrueCrypt.open(@parameters) if @action == :open
+      TrueCrypt.close(@parameters) if @action == :close
     end
 
     private

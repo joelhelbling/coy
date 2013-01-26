@@ -12,24 +12,24 @@ module Coy
 
         let(:coy_params) do
           {
-            name: 'foo',
-            password: 'b@r'
+            name:      'foo',
+            password:  'b@r'
           }
         end
 
         let(:tc_params) do
           {
-            name:          '.coy/foo.tc',
-            size_in_bytes: 2_000_000,
-            encryption:    'AES',
-            hash:          'Whirlpool',
-            filesystem:    'FAT',
-            password:      'b@r',
-            keyfiles:      '""'
+            name:           '.coy/foo.tc',
+            size_in_bytes:  2_000_000,
+            encryption:     'AES',
+            hash:           'Whirlpool',
+            filesystem:     'FAT',
+            password:       'b@r',
+            keyfiles:       '""'
           }
         end
 
-        it "create a volume" do
+        it "creates a volume" do
           TrueCrypt.should_receive(:create_volume).with(tc_params)
           subject.go
         end
@@ -38,7 +38,47 @@ module Coy
     end
 
     describe "open" do
+      let(:coy_action) { :open }
 
+      let(:coy_params) do
+        {
+          name:      'foo',
+          password:  'b@r'
+        }
+      end
+
+      let(:tc_params) do
+        {
+          name:      '.coy/foo.tc',
+          password:  'b@r'
+        }
+      end
+
+      it "opens a volume" do
+        TrueCrypt.should_receive(:open).with(tc_params)
+        subject.go
+      end
+    end
+
+    describe "close" do
+      let(:coy_action) { :close }
+
+      let(:coy_params) do
+        {
+          name:  'foo'
+        }
+      end
+
+      let(:tc_params) do
+        {
+          name: '.coy/foo.tc'
+        }
+      end
+
+      it "closes a volume" do
+        TrueCrypt.should_receive(:close).with(tc_params)
+        subject.go
+      end
     end
 
   end
