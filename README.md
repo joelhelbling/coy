@@ -1,37 +1,37 @@
-_This project is nascent and doesn't work yet.  Please set your
-polling interval to at least 300 milliseconds.  Thank-you for your
-patience._
+_This project works, and I have a cuke to prove it. It does require
+[TrueCrypt](http://www.truecrypt.org/downloads) to be installed, however._
 
-_If you're not that patient, and want to see how things are coming
-along, take a look at
-[Coy's Trello board](https://trello.com/board/coy-gem/50fac5252c4479de56004783)._
+_If you want to see how things are coming along, take a look at
+[Coy's Trello board](https://trello.com/board/coy-gem/50fac5252c4479de56004783).
+It's a mess!_
 
 # Coy
 
 A strategy for obscuring shy data, Coy uses TrueCrypt to set up a
 git-ignored, encrypted volume within a project for storing sensitive
 information.  This allows access to that sensitive material _while
-you're developing or running your application_ but otherwise, the
-data is inaccessible.
+you're developing or running your application_ but after you close it,
+the data is inaccessible\*.
 
 You probably don't want to store a whole project in there; usually the
 sensitive stuff is just a few bytes of stuff, such as passwords, personally
 identifying numbers, etc.  But since the volume is created/managed by
 TrueCrypt, it could be arbitrarily large.
 
+\* _Encrypted with AES and a Whirlpool hash algorithm._
+
 ## Usage _(Here's what I'm thinkin')_
 
-This would prompt you for a password:
+This would create a new protected directory called "secret":
 
 ```
-coy --create secret
+coy create secret --password shhhhH!
 ```
 
-This mounts the newly created TrueCrypt volume, and in the process, also
-prompts you for the password:
+This mounts the newly created TrueCrypt volume:
 
 ```
-coy open [secret]
+coy open secret --password shhhhH!
 ```
 
 Now you can slip on in there:
@@ -50,13 +50,14 @@ Once you're done developing or delivering toys and whatnot, you can
 close up shop:
 
 ```
+cd ..
 coy close [secret]
 ```
 
 Now your secret identity is protected by AES encryption with a Whirlpool
 hash.  Or whatever other measures TrueCrypt offers.  Dobermans, probably.
 
-## Operations _(In the works)_
+## Operations
 
  - create a volume with the supplied {name}, prompting for password
  - mount that volume in the root of the project as a dir matching {name}
@@ -70,13 +71,9 @@ hash.  Or whatever other measures TrueCrypt offers.  Dobermans, probably.
    This could be slick with a little system menu icon with drop-down
    menu.
 
-## How Coy Works (If it worked)
+## Rather Urgent TODO's
 
- - .coy directory in root of project, configuring:
-   - {name}
-   - mounting parameters (if any)
-
- - each operation verifies that the following are in the project's .gitignore
-   - .coy
-   - {name}.tc
-   - ./{name}
+ - The whole git-ignoree bit.  It should ensure your newly protected
+   directory (and the volume file it rode in on) are ignored by git.
+ - prompt in CLI for password: if no password is provided, let's use
+   the CLI to prompt for one.  I'm thinking the highrise gem.
