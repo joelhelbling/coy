@@ -1,0 +1,58 @@
+#!/usr/bin/env ruby
+
+$:.unshift File.expand_path(File.join(File.dirname(__FILE__), '..', 'lib'))
+
+require 'main'
+require 'coy'
+
+Main {
+  description <<-DESC
+  Coy uses TrueCrypt (installed separately) to create and manage
+  a protected, git-ignored directory within your project.
+
+  For help with individual operations (create|open|close) type
+  `coy <operation> -h`
+  DESC
+
+  mode 'create' do
+    argument('name') {
+      description "...of the protected directory."
+      default "secret"
+    }
+    option('password=[PASSWORD]', 'p') {
+      cast :string
+      description "set a password for the new protected directory"
+    }
+
+    def run()
+      puts Coy::Operation.new(:create, params.to_options).go
+    end
+  end
+
+  mode 'open' do
+    argument('name') {
+      description "...of the protected directory."
+      default "secret"
+    }
+    option('password=[PASSWORD]', 'p') {
+      cast :string
+      description "password to unlock the protected directory"
+    }
+    def run()
+      puts Coy::Operation.new(:open, params.to_options).go
+    end
+  end
+
+  mode 'close' do
+    argument('name') {
+      description "...of the protected directory."
+      default "secret"
+    }
+    def run()
+      puts Coy::Operation.new(:close, params.to_options).go
+    end
+  end
+
+  run { puts params.to_options.inspect }
+}
+

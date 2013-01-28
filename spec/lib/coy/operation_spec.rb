@@ -19,7 +19,9 @@ module Coy
 
         let(:tc_params) do
           {
-            name:           '.coy/foo.tc',
+            name:           'foo',
+            short_name:     'foo',
+            file_name:      '.coy/foo.tc',
             size_in_bytes:  2_000_000,
             encryption:     'AES',
             hash:           'Whirlpool',
@@ -49,8 +51,10 @@ module Coy
 
       let(:tc_params) do
         {
-          name:      '.coy/foo.tc',
-          password:  'b@r'
+          name:        'foo',
+          short_name:  'foo',
+          file_name:   '.coy/foo.tc',
+          password:    'b@r'
         }
       end
 
@@ -71,7 +75,10 @@ module Coy
 
       let(:tc_params) do
         {
-          name: '.coy/foo.tc'
+          name:        'foo',
+          short_name:  'foo',
+          file_name:   '.coy/foo.tc',
+          password:    nil
         }
       end
 

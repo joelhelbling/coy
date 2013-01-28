@@ -5,7 +5,9 @@ module Coy
 
     def initialize(action, p={})
       @action = action
-      p[:name] = format_name(p[:name])
+      p[:short_name] ||= (p[:name] || p['name'])
+      p[:file_name] = format_name(p[:short_name])
+      p[:password] ||= p['password']
       @parameters = p
       send("parameters_for_#{@action}".to_sym)
     end
@@ -30,7 +32,11 @@ module Coy
     end
 
     def go
-      TrueCrypt.create_volume(@parameters) if @action == :create
+      if @action == :create
+        ensure_coy_directory_exists
+        TrueCrypt.create_volume(@parameters) &&
+        puts("Protected directory \"#{@parameters[:name]}\" successfully created.")
+      end
       TrueCrypt.open(@parameters) if @action == :open
       TrueCrypt.close(@parameters) if @action == :close
     end
@@ -42,7 +48,10 @@ module Coy
     end
 
     def ensure_coy_directory_exists
-      Dir.mkdir('.coy') unless File.directory?('./.coy')
+      unless File.directory?('./.coy')
+        puts "Creating .coy subdirectory..."
+        Dir.mkdir('.coy')
+      end
     end
 
   end
