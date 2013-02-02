@@ -35,7 +35,7 @@ module Coy
       if @action == :create
         ensure_coy_directory_exists
         TrueCrypt.create_volume(@parameters) &&
-        puts("Protected directory \"#{@parameters[:name]}\" successfully created.")
+        puts("Protected directory \"#{@parameters[:short_name]}\" successfully created.")
       end
       TrueCrypt.open(@parameters) if @action == :open
       TrueCrypt.close(@parameters) if @action == :close
