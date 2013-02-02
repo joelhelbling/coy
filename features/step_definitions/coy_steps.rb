@@ -1,3 +1,7 @@
+Given /I have an appropriate \.gitignore file/ do
+  step "a file named \".gitignore\" with:", ".coy\nfoo\nbar"
+end
+
 Given /^I have a protected directory named "(.*?)" with password "(.*?)"$/ do |vol_name, password|
   @password = password
   step "I run `coy create #{vol_name} --password #{password}`"

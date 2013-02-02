@@ -1,4 +1,8 @@
-Feature: Create a truecrypt volume
+@truecrypt
+Feature: Interact with truecrypt volumes
+
+  Background:
+    Given I have an appropriate .gitignore file
 
   @create
   Scenario: create a plain 'ole volume with the name provided
