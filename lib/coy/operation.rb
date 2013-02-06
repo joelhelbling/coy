@@ -1,4 +1,5 @@
 require 'truecrypt'
+require 'coy/gitignore'
 
 module Coy
   class Operation
@@ -32,6 +33,7 @@ module Coy
     end
 
     def go
+      Gitignore.guard_ignorance @parameters[:short_name]
       if @action == :create
         ensure_coy_directory_exists
         TrueCrypt.create_volume(@parameters) &&

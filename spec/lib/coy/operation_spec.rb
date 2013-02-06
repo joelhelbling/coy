@@ -3,6 +3,10 @@ require 'coy/operation'
 
 module Coy
   describe Operation do
+    before do
+      Gitignore.stub(:guard_ignorance)
+    end
+
     subject { Operation.new coy_action, coy_params }
 
     describe "create" do
