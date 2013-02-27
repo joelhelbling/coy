@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/joelhelbling/coy.png)](https://travis-ci.org/joelhelbling/coy)
+
 # Coy
 
 /koi/ Adjective: *reluctant to give details, esp. about something regarded as
