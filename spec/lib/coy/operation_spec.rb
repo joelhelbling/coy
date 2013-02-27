@@ -47,7 +47,8 @@ module Coy
             hash:           'Whirlpool',
             filesystem:     'FAT',
             password:       'b@r',
-            keyfiles:       '""'
+            keyfiles:       '""',
+            random_source:  "./.coy/#{volume}.random"
           }
         end
 

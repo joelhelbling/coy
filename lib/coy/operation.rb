@@ -1,6 +1,7 @@
 require 'highline'
 require 'ignorance'
 require 'truecrypt'
+require 'coy/random_source'
 
 module Coy
   class Operation
@@ -50,8 +51,11 @@ module Coy
     def create
       ensure_coy_directory_exists
       guard_password_provided "Please provide a password for protected director"
-      TrueCrypt.create_volume(@parameters) &&
-      puts("Protected directory \"#{@parameters[:short_name]}\" successfully created.")
+      RandomSource.generate("./#{COY_DIR}/#{@parameters[:short_name]}.random") do |random_source|
+        @parameters[:random_source] = random_source
+        TrueCrypt.create_volume(@parameters) &&
+        puts("Protected directory \"#{@parameters[:short_name]}\" successfully created.")
+      end
     end
 
     def open
