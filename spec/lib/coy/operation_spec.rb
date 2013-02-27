@@ -8,10 +8,22 @@ module Coy
       TrueCrypt.stub(:create_volume)
       TrueCrypt.stub(:open)
       TrueCrypt.stub(:close)
+      TrueCrypt.stub(:installed?).and_return(true)
     end
 
     let(:volume) { 'foo' }
     subject { Operation.new coy_action, coy_params }
+
+    context "when TrueCrypt is not installed" do
+      let(:coy_action) { :doesnt_matter }
+      let(:coy_params) { { name: volume } }
+
+      before { TrueCrypt.stub(:installed?).and_return(false) }
+
+      specify do
+        expect { subject }.to raise_error /truecrypt.*?not installed/i
+      end
+    end
 
     describe ":create" do
 

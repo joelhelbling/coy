@@ -43,5 +43,9 @@ class TrueCrypt
     `truecrypt -d #{file_name}`
   end
 
+  def self.installed?
+    !! `which truecrypt`.chomp.match(/truecrypt$/i)
+  end
+
 end
 

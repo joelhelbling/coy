@@ -9,6 +9,9 @@ module Coy
     COY_COMMENT = "added by coy"
 
     def initialize(action, p={})
+
+      guard_truecrypt_installed
+
       @action = action
       p[:short_name] ||= (p[:name] || p['name'])
       p[:file_name]    = format_name(p[:short_name])
@@ -68,6 +71,15 @@ module Coy
      "#{COY_DIR}/#{name.gsub(/\.tc$/,'')}.tc"
     end
 
+    def guard_truecrypt_installed
+      message = <<-ERROR
+Coy requires TrueCrypt, but TrueCrypt is not installed! (Or at least it's not in the path.)
+
+You can download TrueCrypt here: http://www.truecrypt.org/downloads
+
+      ERROR
+      raise message unless TrueCrypt.installed?
+    end
     def ensure_coy_directory_exists
       unless File.directory?('./.coy')
         puts "Creating .coy subdirectory..."
