@@ -4,28 +4,32 @@ require 'coy/operation'
 module Coy
   describe Operation do
     before do
-      Gitignore.stub(:guard_ignorance)
+      Ignorance.stub(:negotiate)
+      TrueCrypt.stub(:create_volume)
+      TrueCrypt.stub(:open)
+      TrueCrypt.stub(:close)
     end
 
+    let(:volume) { 'foo' }
     subject { Operation.new coy_action, coy_params }
 
-    describe "create" do
+    describe ":create" do
 
       context "required params only" do
         let(:coy_action) { :create }
 
         let(:coy_params) do
           {
-            name:      'foo',
+            name:      volume,
             password:  'b@r'
           }
         end
 
         let(:tc_params) do
           {
-            name:           'foo',
-            short_name:     'foo',
-            file_name:      '.coy/foo.tc',
+            name:           volume,
+            short_name:     volume,
+            file_name:      ".coy/#{volume}.tc",
             size_in_bytes:  2_000_000,
             encryption:     'AES',
             hash:           'Whirlpool',
@@ -39,11 +43,21 @@ module Coy
           TrueCrypt.should_receive(:create_volume).with(tc_params)
           subject.go
         end
+
+        it "negotiates adding the coy directory to ignore file" do
+          Ignorance.should_receive(:negotiate).with('.coy', Operation::COY_COMMENT)
+          subject.go
+        end
+
+        it "negotiates adding volume to ignore files" do
+          Ignorance.should_receive(:negotiate).with(volume, Operation::COY_COMMENT)
+          subject.go
+        end
       end
 
     end
 
-    describe "open" do
+    describe ":open" do
       let(:coy_action) { :open }
 
       let(:coy_params) do
@@ -66,9 +80,19 @@ module Coy
         TrueCrypt.should_receive(:open).with(tc_params)
         subject.go
       end
+
+      it "negotiates adding the coy directory to ignore file" do
+        Ignorance.should_receive(:negotiate).with('.coy', Operation::COY_COMMENT)
+        subject.go
+      end
+
+      it "negotiates adding volume to ignore files" do
+        Ignorance.should_receive(:negotiate).with(volume, Operation::COY_COMMENT)
+        subject.go
+      end
     end
 
-    describe "close" do
+    describe ":close" do
       let(:coy_action) { :close }
 
       let(:coy_params) do
@@ -88,6 +112,16 @@ module Coy
 
       it "closes a volume" do
         TrueCrypt.should_receive(:close).with(tc_params)
+        subject.go
+      end
+
+      it "negotiates adding the coy directory to ignore file" do
+        Ignorance.should_receive(:negotiate).with('.coy', Operation::COY_COMMENT)
+        subject.go
+      end
+
+      it "negotiates adding volume to ignore files" do
+        Ignorance.should_receive(:negotiate).with(volume, Operation::COY_COMMENT)
         subject.go
       end
     end
