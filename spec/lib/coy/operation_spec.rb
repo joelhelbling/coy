@@ -57,7 +57,7 @@ module Coy
 
     end
 
-    describe ":open" do
+    describe ":open", :fakefs do
       let(:coy_action) { :open }
 
       let(:coy_params) do
@@ -76,6 +76,11 @@ module Coy
         }
       end
 
+      before do
+        Dir.mkdir '.coy'
+        File.open(".coy/#{volume}.tc", 'w') {|fh| fh.write "whatnot" }
+      end
+
       it "opens a volume" do
         TrueCrypt.should_receive(:open).with(tc_params)
         subject.go
@@ -92,7 +97,7 @@ module Coy
       end
     end
 
-    describe ":close" do
+    describe ":close", :fakefs do
       let(:coy_action) { :close }
 
       let(:coy_params) do
@@ -110,6 +115,11 @@ module Coy
         }
       end
 
+      before do
+        Dir.mkdir '.coy'
+        File.open(".coy/#{volume}.tc", 'w') {|fh| fh.write "whatnot" }
+      end
+
       it "closes a volume" do
         TrueCrypt.should_receive(:close).with(tc_params)
         subject.go
@@ -123,6 +133,54 @@ module Coy
       it "negotiates adding volume to ignore files" do
         Ignorance.should_receive(:negotiate).with(volume, Operation::COY_COMMENT)
         subject.go
+      end
+    end
+
+    describe "guarding against non-existant volume", :fakefs, :capture_io do
+      context "volume doesn't exist" do
+        let(:volume_name) { 'foo' }
+        let(:coy_params) { { name: volume_name } }
+
+        describe ":open" do
+          let(:coy_action) { :open }
+
+          it "advises user to create volume" do
+            expect( output_from { subject.go } ).to match /create.*?#{volume_name}/i
+          end
+        end
+
+        describe ":close" do
+          let(:coy_action) { :close }
+
+          it "advises user to create volume" do
+            expect( output_from { subject.go } ).to match /create.*?#{volume_name}/i
+          end
+        end
+      end
+    end
+
+    context "when user omits password in command-line", :fakefs, :capture_io do
+      let(:coy_params) { { name: volume } }
+
+      before do
+        Dir.mkdir '.coy'
+        File.open(".coy/#{volume}.tc", 'w') { |fh| fh.write "whatnot" }
+      end
+
+      describe ":create" do
+        let(:coy_action) { :create }
+
+        it "asks user to provide a password" do
+          expect( user_types("p@55w0rd") { subject.go } ).to match /provide.*?password.*?#{volume}/i
+        end
+      end
+
+      describe ":open" do
+        let(:coy_action) { :open }
+
+        it "prompts user for volume password" do
+          expect( user_types("p@55w0rd") { subject.go } ).to match /enter.*?password.*?#{volume}/i
+        end
       end
     end
 
