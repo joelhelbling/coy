@@ -1,79 +1,100 @@
-_This project works, and I have a cuke to prove it. It does require
-[TrueCrypt](http://www.truecrypt.org/downloads) to be installed, however._
-
-_If you want to see how things are coming along, take a look at
-[Coy's Trello board](https://trello.com/board/coy-gem/50fac5252c4479de56004783).
-It's a mess!_
-
 # Coy
 
-A strategy for obscuring shy data, Coy uses TrueCrypt to set up a
-git-ignored, encrypted volume within a project for storing sensitive
+/koi/ Adjective: *reluctant to give details, esp. about something regarded as
+sensitive.*
+
+A utility for protecting shy data, Coy uses TrueCrypt to set up a vcs-ignored\*,
+encrypted volume within your project project for storing sensitive
 information.  This allows access to that sensitive material _while
 you're developing or running your application_ but after you close it,
-the data is inaccessible\*.
+the data is inaccessible\*\*.
 
 You probably don't want to store a whole project in there; usually the
-sensitive stuff is just a few bytes of stuff, such as passwords, personally
-identifying numbers, etc.  But since the volume is created/managed by
-TrueCrypt, it could be arbitrarily large.
+sensitive bits are just a few bytes of stuff, such as passwords, personally
+identifying information, etc.  Accordingly, Coy's protected directories have
+a 2Mb capacity.
 
-\* _Encrypted with AES and a Whirlpool hash algorithm._
+\* _Git, Mercurial and SVN (See [Ignorance](http://github.com/joelhelbling/ignorance).)_
 
-## Usage _(Here's what I'm thinkin')_
+\*\* _Encrypted with AES and a Whirlpool hash algorithm._
+
+## Installation
+
+First, you'll need to [install TrueCrypt](http://www.truecrypt.org/downloads) and ensure
+its command-line utility is visible in your path:
+
+    $ which truecrypt
+
+Now you can add this line to your application's Gemfile:
+
+    gem 'coy'
+
+And then execute:
+
+    $ bundle
+
+Or install it yourself as:
+
+    $ gem install coy
+
+
+## Usage
 
 This would create a new protected directory called "secret":
 
-```
-coy create secret --password shhhhH!
-```
+    $ coy create secret
 
 This mounts the newly created TrueCrypt volume:
 
-```
-coy open secret --password shhhhH!
-```
+    $ coy open secret
 
 Now you can slip on in there:
 
-```
-cd secret
-```
+    $ cd secret/
 
 And stash some top-secret tidbits that your program will need:
 
-```
-echo "---\n - :santas_little_helper: me" > hush-hush.yaml
+    $ echo "---\n - :santas_little_helper: me" > hush-hush.yaml
+
+And then, in your ruby code:
+
+```ruby
+File.exists? './secret/hush-hush.yaml' #=> true
 ```
 
 Once you're done developing or delivering toys and whatnot, you can
 close up shop:
 
 ```
-cd ..
-coy close [secret]
+$ cd ..
+$ coy close secret
 ```
 
-Now your secret identity is protected by AES encryption with a Whirlpool
-hash.  Or whatever other measures TrueCrypt offers.  Dobermans, probably.
+And at this point, the `secret/` directory is inaccessible (unmounted).
 
-## Operations
+```ruby
+Dir.exists? './secret/' #=> false
+```
 
- - create a volume with the supplied {name}, prompting for password
- - mount that volume in the root of the project as a dir matching {name}
- - unmount that volume (using the supplied {name})
- - hook for application which will attempt to mount the drive when your
-   app is run.  Should be disabled for running tests (do _not_ mount
-   volume when running tests, but instead symbolic link {name}.test to
-   {name}
- - Future: daemon which watches project dir for file events, and after
-   {timeout} with no activity, will un-mount the volume and shut down.
-   This could be slick with a little system menu icon with drop-down
-   menu.
+Now your secret identity is protected by AES encryption, a Whirlpool hash,
+your awesome password, and whatever other measures TrueCrypt uses.  Dobermans,
+probably.
 
-## Rather Urgent TODO's
+### Password
 
- - The whole git-ignoree bit.  It should ensure your newly protected
-   directory (and the volume file it rode in on) are ignored by git.
- - prompt in CLI for password: if no password is provided, let's use
-   the CLI to prompt for one.  I'm thinking the highrise gem.
+The `create` and `open` commands require a password.  Coy will prompt you,
+and mask the input.  On the other hand, if you're safe in the batcave, you
+can include the password as a command-line argument:
+
+    $ coy create secret --password l33tp@55w0rd
+    $ coy open secret -p l33tp@55w0rd
+
+## Contributing
+
+1. Fork it
+2. Create your feature branch (`git checkout -b my-new-feature`)
+3. Write tests!
+4. Commit your changes (`git commit -am 'Add some feature'`)
+5. Push to the branch (`git push origin my-new-feature`)
+6. Create new Pull Request
+
