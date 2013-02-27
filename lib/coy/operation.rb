@@ -50,7 +50,7 @@ module Coy
 
     def create
       ensure_coy_directory_exists
-      guard_password_provided "Please provide a password for protected director"
+      guard_password_provided "Please provide a password for protected directory"
       RandomSource.generate("./#{COY_DIR}/#{@parameters[:short_name]}.random") do |random_source|
         @parameters[:random_source] = random_source
         TrueCrypt.create_volume(@parameters) &&
@@ -106,7 +106,7 @@ You can create one by typing `coy create #{volume_name}`
 
     def guard_password_provided(msg_preamble="Please enter password for protected directory")
       unless @parameters[:password]
-        @parameters[:password] = HighLine.new.ask("#{msg_preamble} \"#{@parameters[:name]}\":  ") {|x| x.echo = "*" }
+        @parameters[:password] = HighLine.new.ask("#{msg_preamble} \"#{@parameters[:short_name]}\":  ") {|x| x.echo = "*" }
       end
     end
 

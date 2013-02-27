@@ -26,7 +26,6 @@ class TrueCrypt
         --random-source=#{random_source}
     TC
 
-    puts `pwd`
     `#{command}`
   end
 
