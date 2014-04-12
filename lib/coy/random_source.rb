@@ -1,4 +1,5 @@
 require 'net/http'
+require 'pry'
 
 module Coy
   class RandomSource
@@ -18,7 +19,7 @@ module Coy
     def self.rand_strategy
       some_random_bytes.inject("") do |accumulator, random_bytes|
         accumulator.tap do |acc|
-          acc << random_bytes.crypt(@prev.to_s.rjust(2, random_bytes))
+          acc << random_bytes.crypt(@prev.to_s.rjust(2, random_bytes).gsub(/[^\da-zA-Z]/,'x'))
           @prev = random_bytes.hash.to_s
         end
       end
