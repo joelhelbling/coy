@@ -1,5 +1,4 @@
 require 'net/http'
-require 'pry'
 
 module Coy
   class RandomSource
