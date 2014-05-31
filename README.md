@@ -22,8 +22,9 @@ a 2Mb capacity.
 
 ## Installation
 
-First, you'll need to [install TrueCrypt](http://www.truecrypt.org/downloads) and ensure
-its command-line utility is visible in your path:
+First, you'll need to [install TrueCrypt 7.1a](https://github.com/DrWhax/truecrypt-archive)
+(or [compile from source](https://github.com/FreeApophis/TrueCrypt)) and ensure its
+command-line utility is visible in your path:
 
     $ which truecrypt
 
